@@ -1,0 +1,66 @@
+---
+title: "761_aoi"
+author: "Amanda Harris"
+date: "2025-10-26"
+output: html_document
+---
+
+```{r part 1} 
+# Load required libraries
+library(sf)
+library(ggplot2)
+library(rnaturalearth)
+library(rnaturalearthdata)
+
+# Get New Zealand map data
+nz <- ne_countries(scale = "medium", country = "New Zealand", returnclass = "sf")
+
+# Define Christchurch city center coordinates
+christchurch_lon <- 172.6362
+christchurch_lat <- -43.5321
+
+# Create a polygon around Christchurch city
+# These coordinates roughly outline the main city area
+christchurch_coords <- data.frame(
+  lon = c(172.5200, 172.7500, 172.7500, 172.5200, 172.5200),
+  lat = c(-43.4500, -43.4500, -43.6000, -43.6000, -43.4500)
+)
+
+# Convert to sf polygon
+christchurch_polygon <- st_polygon(list(as.matrix(christchurch_coords)))
+christchurch_sf <- st_sfc(christchurch_polygon, crs = 4326)
+
+# Create the map
+ggplot() +
+  # Add New Zealand outline
+  geom_sf(data = nz, fill = "lightgray", color = "black", size = 0.5) +
+  # Add Christchurch polygon
+  geom_sf(data = christchurch_sf, fill = NA, color = "red", size = 1.5) +
+  # Add point for Christchurch city center
+  geom_point(aes(x = christchurch_lon, y = christchurch_lat), 
+             color = "red", size = 3, shape = 16) +
+  # Add label
+  annotate("text", x = christchurch_lon + 0.3, y = christchurch_lat, 
+           label = "Christchurch", hjust = 0, size = 4, fontface = "bold") +
+  # Set coordinate system and theme
+  coord_sf(xlim = c(166, 179), ylim = c(-47, -34)) +
+  theme_minimal() +
+  labs(title = "New Zealand with Christchurch City Boundary",
+       x = "Longitude",
+       y = "Latitude") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 14))
+
+# Optional: Create a zoomed-in version of just Christchurch
+ggplot() +
+  geom_sf(data = nz, fill = "lightgray", color = "black") +
+  geom_sf(data = christchurch_sf, fill = NA, color = "red", size = 1.5) +
+  geom_point(aes(x = christchurch_lon, y = christchurch_lat), 
+             color = "red", size = 4) +
+  coord_sf(xlim = c(172.4, 172.8), ylim = c(-43.7, -43.4)) +
+  theme_minimal() +
+  labs(title = "Christchurch City Detail",
+       x = "Longitude",
+       y = "Latitude") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 14))
+
+```
