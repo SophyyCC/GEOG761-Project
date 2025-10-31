@@ -2,7 +2,5 @@
 Data Divas
 
 ## CNN Model
-### Stage A - Data Preprocessing
-### Stage B - Modelling, hyperparameter tuning
-### Stage C - Loading model, evaluating precision
 
+## RF Model
